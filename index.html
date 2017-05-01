@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shiny + Databases</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Shiny + Databases">
+  <meta name="author" content="Christina Brady">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Shiny + Databases</h1>
+    <h2>MongoDB and PostgreSQL</h2>
+    <p>Christina Brady<br/>Data Scientist, World Bank</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Shiny + Databases</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>Setting up your DB</li>
+<li>Connecting to it via R</li>
+<li>Calling from and saving to your DB from Shiny</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="nobackground centrepre bigger" id="slide-2">
+<hgroup>
+  <h2>MongoDB</h2>
+</hgroup>
+<article class = 'flexbox vcenter'>
+
+</article>
+<!-- Presenter Notes -->
+</slide>
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Install and Run MongoDB on MacOS</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li><p>Give yourself ownership of the /usr/local folder again</p></li>
+<li><p>Install via homebrew</p></li>
+<li><p>Create a data directory and give proper permissions</p></li>
+<li><p>Start the server</p></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Install and Run MongoDB on MacOS (code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This is all in the Terminal</p>
+
+<pre><code># give yourself ownership of /usr/local
+sudo chown $(whoami):admin /usr/local &amp;&amp; sudo chown -R $(whoami):admin /usr/local
+
+# update homebrew and install Mongo
+brew update &amp;&amp; brew install mongodb
+
+# create data directory
+mkdir -p /data/db
+sudo chown -R `id-un` /data/db
+
+# start the server
+mongod
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Install and Run MongoDB on Ubuntu</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li><p>Install via apt-get</p></li>
+<li><p>Start the server</p></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Install and Run MongoDB on Ubuntu (code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This is also in the Terminal</p>
+
+<pre><code># get a public key from MongoDB
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+echo &quot;deb http://repo.mongodb.org/apt/ubuntu &quot;$(lsb_release -sc)&quot;/mongodb-org/3.0 multiverse&quot;
+
+# update apt-get and install Mongo
+sudo apt-get update
+sudo apt-get install -y mongodb
+
+# pin the current version so that it doesn&#39;t auto-update
+echo &quot;mongodb hold&quot; | sudo dpkg --set-selections
+echo &quot;mongodb-server hold&quot; | sudo dpkg --set-selections
+
+# Start the server
+sudo service mongodb start
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Connect to your MongoDB from R</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>Install jsonlite and mongolite</li>
+<li>Install SSL libraries for Ubuntu</li>
+<li>Require or library jsonlite and mongolite</li>
+<li>Open a connection</li>
+<li>Call or save data</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Connect to your MongoDB from R (code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In Terminal (if necessary)</p>
+
+<pre><code>sudo apt-get libssl-dev
+sudo apt-get libsas12-dev
+</code></pre>
+
+<p>In R</p>
+
+<pre><code>install.packages(c(&quot;jsonlite&quot;, &quot;mongolite&quot;))
+library(jsonlite)
+library(mongolite)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>Connect to Shiny (calling data)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In db_connection.R</p>
+
+<pre><code>m &lt;- mongo(collection = &quot;dbname&quot;)
+</code></pre>
+
+<p>In global.R</p>
+
+<pre><code>library(jsonlite)
+library(mongolite)
+source(&quot;db_connection.R&quot;)
+data_for_shiny &lt;- m$find()
+distinct_data &lt;- m$distinct(&quot;name&quot;)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Connect to Shiny (save data)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In ui.R</p>
+
+<ol class = "build incremental">
+<li>Create an action button</li>
+</ol>
+
+<p>In server.R</p>
+
+<ol class = "build incremental">
+<li>Create a named list</li>
+<li>Translate to JSON</li>
+<li>Insert into your collection</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Saving Data (code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>in ui.R</p>
+
+<pre><code>actionButton(inputId = &quot;save&quot;, label = &quot;Save&quot;)
+</code></pre>
+
+<p>in server.R</p>
+
+<pre><code>observeEvent(input$save, {
+  newrecipe &lt;- list()
+  newrecipe[[&quot;name&quot;]] &lt;- input$name
+  newrecipe[[&quot;ingredients&quot;]] &lt;- input$ingredients
+  newrecipe[[&quot;instructions&quot;]] &lt;- input$instructions
+  newrecipe[[&quot;tags&quot;]] &lt;- input$tags
+  m$insert(toJSON(newrecipe))
+  })
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>Common Problems with MongoDB</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>I forgot that I pinned the current version, then tried to upgrade to a newer version.</li>
+<li>Text search in version &gt;= 2.4</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>PostgreSQL</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Install and Run PostgreSQL (MacOS/Ubuntu)</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>Install PostgreSQL via Installer (MacOS), hombrew (MacOS) or apt-get (Ubuntu)</li>
+<li>Change default password</li>
+<li>Create a new database</li>
+<li>Create a new user</li>
+<li>Grant the new user privileges to the database</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Install ODBC (MacOS)</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>Download psqlODBC Driver from website</li>
+<li>Install from binary</li>
+<li>Install driver manager (iodbc, unixodbc)</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Install ODBC (MacOS: code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In Terminal:</p>
+
+<pre><code>cd path/to/psqlodbc-09.06.0200/
+./configure
+make
+sudo make install
+</code></pre>
+
+<p>Install Driver Manager (in Terminal)</p>
+
+<pre><code>brew update &amp;&amp; brew install unixODBC
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>Install ODBC (Ubuntu)</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>Install unixODBC from apt-get</li>
+<li>Install odbc-postgresql from apt-get</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Install ODBC (Ubuntu: code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In Terminal:</p>
+
+<pre><code>sudo apt-get install unixODBC unixODBC-dev
+sudo apt-get install odbc-postgresql
+
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Configure your ODBC connection (MacOS/Ubuntu)</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>Find your odbcinst.ini and odbc.ini</li>
+<li>Configure your driver</li>
+<li>Set up a connection to a database</li>
+<li>Test your connection</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>Configure your ODBC connection (MacOS/Ubuntu: code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In Terminal</p>
+
+<pre><code>odbcinst -j
+</code></pre>
+
+<p>Once you find them</p>
+
+<pre><code>sudo nano path/to/odbcinst.ini
+sudo nano path/to/odbc.ini
+</code></pre>
+
+<p>Once everything is set up</p>
+
+<pre><code>isql -v dbname db_username db_password
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>This is what it should look like (MacOS/Ubuntu)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Find ODBC Files</p>
+
+<p><img src="./assets/img/find_odbc_files.png" alt="Find ODBC Files"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>This is what it should look like (MacOS/Ubuntu)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>odbninst.ini</p>
+
+<p><img src="./assets/img/odbcinst_file.png" alt="odbcinst"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>This is what it should look like (MacOS/Ubuntu)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>odbc.ini</p>
+
+<p><img src="./assets/img/odbcini_file.png" alt="odbcini"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>This is what it should look like (MacOS/Ubuntu)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>isql</p>
+
+<p><img src="./assets/img/isql.png" alt="odbcini"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-25" style="background:;">
+  <hgroup>
+    <h2>Connect to your PostgreSQL DB via R</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>Download and install RODBC</li>
+<li>Open a connection</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-26" style="background:;">
+  <hgroup>
+    <h2>Install RODBC (MacOS: code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><a href="https://cran.r-project.org/web/packages/RODBC/index.html">Download here</a></p>
+
+<p>In Terminal</p>
+
+<pre><code>R CMD INSTALL path/to/RODBC...tar.gz
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-27" style="background:;">
+  <hgroup>
+    <h2>Install RODBC (Ubuntu: code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In Terminal</p>
+
+<pre><code>sudo apt-get install r-cran-rodbc
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-28" style="background:;">
+  <hgroup>
+    <h2>Open a connection</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In R</p>
+
+<pre><code>library(RODBC)
+odbcDataSources()
+db &lt;- odbcConnect(&quot;dbname&quot;)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>Connect to Shiny (calling data)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In db_connection.R</p>
+
+<pre><code>library(RODBC)
+dbobject &lt;- odbcConnect(&quot;dbname&quot;, uid = &quot;userid&quot;, pwd = &quot;password&quot;)
+</code></pre>
+
+<p>In global.R</p>
+
+<pre><code>source(&quot;db_connection.R&quot;)
+shiny_data &lt;- sqlQuery(dbobject, &quot;SELECT col1, col2, col3 FROM dbname WHERE col1 = &#39;x&#39;&quot;)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>Connect to Shiny (save data)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In ui.R</p>
+
+<ol class = "build incremental">
+<li>Create an action button</li>
+</ol>
+
+<p>In server.R</p>
+
+<ol class = "build incremental">
+<li>Create a dataframe</li>
+<li>Insert into your collection</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-31" style="background:;">
+  <hgroup>
+    <h2>Saving Data (code)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>in ui.R</p>
+
+<pre><code>actionButton(inputId = &quot;save&quot;, label = &quot;Save&quot;)
+</code></pre>
+
+<p>in server.R</p>
+
+<pre><code>observeEvent(input$save, {
+  attendance &lt;- data.frame(
+    meeting_date = Sys.Date(),
+    role = input$role,
+    member = input$name)
+    sqlSave(dbobject, attendance, &quot;dbattendance&quot;, append = TRUE, varTypes = c(meeting_date = &quot;date&quot;, role = &quot;varchar&quot;, member = &quot;varchar&quot;), colnames = FALSE, rownames = FALSE)
+    )
+  })
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>Common Problems with PostgreSQL</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol class = "build incremental">
+<li>There are 2 possible driver managers for ODBC</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-33" style="background:;">
+  <hgroup>
+    <h2>Resources</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><a href="http://treehouse.github.io/installation-guides/mac/mongo-mac.html">Installing MongoDB on Mac</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Shiny + Databases'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='MongoDB'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Install and Run MongoDB on MacOS'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Install and Run MongoDB on MacOS (code)'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Install and Run MongoDB on Ubuntu'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Install and Run MongoDB on Ubuntu (code)'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Connect to your MongoDB from R'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Connect to your MongoDB from R (code)'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Connect to Shiny (calling data)'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Connect to Shiny (save data)'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Saving Data (code)'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Common Problems with MongoDB'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='PostgreSQL'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='Install and Run PostgreSQL (MacOS/Ubuntu)'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Install ODBC (MacOS)'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Install ODBC (MacOS: code)'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='Install ODBC (Ubuntu)'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Install ODBC (Ubuntu: code)'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Configure your ODBC connection (MacOS/Ubuntu)'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='Configure your ODBC connection (MacOS/Ubuntu: code)'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='This is what it should look like (MacOS/Ubuntu)'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='This is what it should look like (MacOS/Ubuntu)'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='This is what it should look like (MacOS/Ubuntu)'>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='This is what it should look like (MacOS/Ubuntu)'>
+         24
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=25 title='Connect to your PostgreSQL DB via R'>
+         25
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=26 title='Install RODBC (MacOS: code)'>
+         26
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=27 title='Install RODBC (Ubuntu: code)'>
+         27
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=28 title='Open a connection'>
+         28
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=29 title='Connect to Shiny (calling data)'>
+         29
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=30 title='Connect to Shiny (save data)'>
+         30
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=31 title='Saving Data (code)'>
+         31
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=32 title='Common Problems with PostgreSQL'>
+         32
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=33 title='Resources'>
+         33
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
