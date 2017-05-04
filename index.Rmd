@@ -354,8 +354,6 @@ observeEvent(input$save, {
 ## Common Problems with PostgreSQL
 > 1. There are 2 possible driver managers for ODBC, unixODBC and iodbc
 
-
-
 ---
 
 ## Resources
