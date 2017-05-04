@@ -352,7 +352,7 @@ observeEvent(input$save, {
 ---
 
 ## Common Problems with PostgreSQL
-> 1. There are 2 possible driver managers for ODBC
+> 1. There are 2 possible driver managers for ODBC, unixODBC and iodbc
 
 
 
@@ -360,3 +360,9 @@ observeEvent(input$save, {
 
 ## Resources
 [Installing MongoDB on Mac] (http://treehouse.github.io/installation-guides/mac/mongo-mac.html)
+[The Little MongoDB Book] (https://docs.mongodb.com/manual/)
+[How to set up Shiny Server on Ubuntu 14.04] (https://www.digitalocean.com/community/tutorials/how-to-set-up-shiny-server-on-ubuntu-14-04)
+[How to Install PostgreSQL on Ubuntu 16.04] (https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+[Set up ODBC on Ubuntu] (http://digitalitility.com/tutori-alitility/postgresql/odbc-setup-on-ubuntu-for-postgresql/)
+[RODBC with unix on Yosemite] (http://stackoverflow.com/questions/31907247/how-do-i-install-rodbc-on-mac-os-x-yosemite-with-unixodbc-and-freetds)
+[RODBC documentation] (https://cran.r-project.org/web/packages/RODBC/vignettes/RODBC.pdf)
